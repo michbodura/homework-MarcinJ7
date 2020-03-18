@@ -84,7 +84,7 @@ def more_cured_than_deaths_indices(date: datetime.date):
     """
     date = format_date(date)
     death = list(dfD[date])
-    rocov = list(dfR[date])
+    rocov = list(dfC[date])
     li = []
     
     for i,j,k in zip(death, rocov, range(len(death))):
