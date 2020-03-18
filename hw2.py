@@ -51,7 +51,7 @@ def countries_with_no_deaths_count(date: datetime.date):
     
     date = format_date(date)
     death = list(dfD[date])
-    conf = list(dfC[date])
+    conf = list(dfR[date])
     counter = 0
     
     for i,j in zip(death, conf):
