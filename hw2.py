@@ -1,3 +1,10 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Mar 18 16:11:16 2020
+
+@author: Marcin
+"""
+
 from typing import List
 import pandas as pd
 import datetime
@@ -27,7 +34,7 @@ def format_date(date: datetime.date):
         return date.strftime('%-m/%-d/%y')
 
 
-def countries_with_no_deaths_count(date: datetime.date) -> int:
+def countries_with_no_deaths_count(date: datetime.date):
     """
     Returns the number of areas (countries, region, provinces) in the data set
     where infections were found, but nobody died on a given date. (DO NOT GROUP BY)
@@ -39,12 +46,23 @@ def countries_with_no_deaths_count(date: datetime.date) -> int:
     :param date: Date object of the date to get the results for
     :return: Number of countries with no deaths but with active cases on a given date as an integer
     """
+    #dfDsum = dfD.groupby('Country/Region').sum()
+    #dfCsum = dfC.groupby('Country/Region').sum()
     
-    # Your code goes here
-    pass
+    date = format_date(date)
+    death = list(dfD[date])
+    conf = list(dfC[date])
+    counter = 0
+    
+    for i,j in zip(death, conf):
+        if(j > 0 and i==0):
+            counter+=1
+    
+    
+    return counter
 
 
-def more_cured_than_deaths_indices(date: datetime.date) -> List[int]:
+def more_cured_than_deaths_indices(date: datetime.date):
     """
     Returns table indices of areas (countries, region, provinces) in the data set
     with more cured cases than deaths on a given date. (DO NOT GROUP BY)
@@ -64,6 +82,13 @@ def more_cured_than_deaths_indices(date: datetime.date) -> List[int]:
     :param date: Date object of the date to get the results for
     :return: A List of integers containing indices of countries which had more cured cases than deaths on a given date
     """
+    date = format_date(date)
+    death = list(dfD[date])
+    rocov = list(dfR[date])
+    li = []
     
-    # Your code goes here
-    pass
+    for i,j,k in zip(death, rocov, range(len(death))):
+        if(j>i):
+            li.append(k)
+   
+    return li
