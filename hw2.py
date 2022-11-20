@@ -5,24 +5,25 @@ Created on Wed Mar 18 16:11:16 2020
 @author: Marcin
 """
 
+
 from typing import List
 import pandas as pd
 import datetime
 import os
 
 # confirmed cases
-url = f"https://raw.githubusercontent.com/CSSEGISandData/COVID-19/a9f182afe873ce7e65d2307fcf91013c23a4556c" \
-      f"/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv "
+url = 'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/a9f182afe873ce7e65d2307fcf91013c23a4556c/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv '
+
 dfC = pd.read_csv(url, error_bad_lines=False)
 
 # deaths
-url = f"https://raw.githubusercontent.com/CSSEGISandData/COVID-19/a9f182afe873ce7e65d2307fcf91013c23a4556c" \
-      f"/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Deaths.csv"
+url = 'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/a9f182afe873ce7e65d2307fcf91013c23a4556c/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Deaths.csv'
+
 dfD = pd.read_csv(url, error_bad_lines=False)
 
 # recovered cases
-url = f"https://raw.githubusercontent.com/CSSEGISandData/COVID-19/a9f182afe873ce7e65d2307fcf91013c23a4556c" \
-      f"/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Recovered.csv "
+url = 'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/a9f182afe873ce7e65d2307fcf91013c23a4556c/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Recovered.csv '
+
 dfR = pd.read_csv(url, error_bad_lines=False)
 
 
@@ -48,18 +49,11 @@ def countries_with_no_deaths_count(date: datetime.date):
     """
     #dfDsum = dfD.groupby('Country/Region').sum()
     #dfCsum = dfC.groupby('Country/Region').sum()
-    
+
     date = format_date(date)
     death = list(dfD[date])
     conf = list(dfR[date])
-    counter = 0
-    
-    for i,j in zip(death, conf):
-        if(j > 0 and i==0):
-            counter+=1
-    
-    
-    return counter
+    return sum(j > 0 and i==0 for i, j in zip(death, conf))
 
 
 def more_cured_than_deaths_indices(date: datetime.date):
@@ -85,10 +79,4 @@ def more_cured_than_deaths_indices(date: datetime.date):
     date = format_date(date)
     death = list(dfD[date])
     rocov = list(dfC[date])
-    li = []
-    
-    for i,j,k in zip(death, rocov, range(len(death))):
-        if(j>i):
-            li.append(k)
-   
-    return li
+    return [k for i, j, k in zip(death, rocov, range(len(death))) if (j>i)]
